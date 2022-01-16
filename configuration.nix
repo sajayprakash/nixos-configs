@@ -88,6 +88,8 @@
     neofetch
     htop
     discord
+    vlc
+    mpv
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
