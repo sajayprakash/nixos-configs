@@ -42,21 +42,37 @@
     keyMap = "us";
   };
 
+  nixpkgs.config = {
+    allowUnfree = true;
+  };
+
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  
-  # Enable Nvidia Driver
-  nixpkgs.config.allowUnfree = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver= {
+    enable = true;
+    videoDrivers = [ "nvidia" ];
+    layout = "us";
+    #windowManager.i3 = {
+      #enable = true;
+      #package = pkgs.i3-gaps;
+     # extraPackages = with pkgs; [ i3blocks i3status dmenu ];
+    #};
+    desktopManager = {
+      plasma5.enable = true;
+    };
+    displayManager = {
+     #defaultSession = "none+i3";
+     lightdm = {
+       enable = true;
+       greeter.enable = true;
+      };
+    };
+  };
 
-  # Enable the Plasma 5 Desktop Environment.
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  programs.dconf.enable = true;
   
-
-  # Configure keymap in X11
-   services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
+  #services.picom = {
+   # enable = true;
+  #};
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -81,10 +97,13 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim
+    lxappearance
     tree
+    kitty
+    xfce.thunar
+    nitrogen
     wget
-    #git
-    gitAndTools.gitFull
+    git
     vscodium
     python3
     firefox
@@ -98,8 +117,20 @@
     discord
     vlc
     mpv
+    flameshot
   ];
 
+  # Install fonts
+  fonts.fonts = with pkgs; [
+      jetbrains-mono 
+      noto-fonts
+      noto-fonts-cjk # Chinese, Japanese, Korean
+      noto-fonts-emoji
+      noto-fonts-extra
+      roboto
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  ];
+ 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -131,7 +162,7 @@ nix.gc = {
 	automatic = true;
 	dates= "weekly";
 	options = "--delete-older-than-30d";
-	};
+  };
 
 }
 
